@@ -1,6 +1,12 @@
 ## Egnyte 
 Egnyte PHP Client
-Added support for copy and listDir
+
+###
+Added support for copy 
+Added support for listDir
+Renamed psr-4 methods
+@todo Chunked Upload
+@todo TestCases
 
 ## Usage
 
