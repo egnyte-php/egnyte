@@ -11,8 +11,12 @@ class File
     protected $request;
     protected $curl;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client = null, $domain=null, $oauth_token=null, $ssl = false)
     {
+        if( ! $client ){
+            $client = new Client( $domain, $oauth_token, $ssl );
+        }   
+
         $this->request = $client->request;
         $this->curl = $client->curl;
     }

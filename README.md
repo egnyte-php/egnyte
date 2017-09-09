@@ -17,7 +17,11 @@ $client = new \Yespbs\Egnyte\Client( 'domain', 'oauth token' );
 
 $fileClient = new \Yespbs\Egnyte\Model\File( $client );
 
+// OR $fileClient = new \Yespbs\Egnyte\Model\File( null, 'domain', 'oauth token' );
+
 $response = $fileClient->upload('/Shared/Documents/test.txt', 'test file upload' );
+
+
 
 ```
 
