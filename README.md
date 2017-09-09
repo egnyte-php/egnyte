@@ -14,6 +14,6 @@ $client = new \Yespbs\Egnyte\Client( EGNYTE_DOMAIN, EGNYTE_OAUTH_TOKEN );
 
 $fileClient = new \Yespbs\Egnyte\Model\File( $client );
 
-$response = $fileClient->upload('/Shared/Documents/test.txt', 'test file upload ' );
+$response = $fileClient->upload('/Shared/Documents/test.txt', 'test file upload' );
 ```
 
