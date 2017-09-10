@@ -48,7 +48,7 @@ class Response
      *
      * @return StdClass A decoded version of the JSON response
      */
-    public function get_body()
+    public function getBody()
     {
         return $this->body;
     }
@@ -59,7 +59,7 @@ class Response
      *
      * @return array An associated array containing error information
      */
-    public function get_error()
+    public function getError()
     {
         if ($this->status_code < 400) {
             return new \Exception('Request was successful, there are no error details');

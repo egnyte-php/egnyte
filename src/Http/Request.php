@@ -49,7 +49,7 @@ class Request
     /**
      * Prepare to POST Json.
      */
-    public function post_json($url, $json = [], $error_map = [])
+    public function postJson($url, $json = [], $error_map = [])
     {
         // set content type to json
         $this->curl->setHeader('Content-Type', 'application/json');
@@ -80,7 +80,7 @@ class Request
      *
      * @return string The url encoded path
      */
-    public static function path_encode($path)
+    public static function pathEncode($path)
     {
         return implode('/', array_map('rawurlencode', explode('/', $path)));
     }

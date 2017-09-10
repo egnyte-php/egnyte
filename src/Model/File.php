@@ -30,7 +30,7 @@ class File
      */
     public function getMetadata($path, $params = [])
     {
-        $path = Request::path_encode($path);
+        $path = Request::pathEncode($path);
         
         if (!empty($params)) {
             $path .= '?' . http_build_query($params);
@@ -50,9 +50,9 @@ class File
     public function createFolder($path)
     {
         // path names are passed in the URL, so they need encoding
-        $path = Request::path_encode($path);
+        $path = Request::pathEncode($path);
 
-        return $this->request->post_json('/fs'.$path, ['action' => 'add_folder'], [
+        return $this->request->postJson('/fs'.$path, ['action' => 'add_folder'], [
             403 => 'User does not have permission to create directory',
             405 => 'A directory with the same name already exists',
         ]);
@@ -76,7 +76,7 @@ class File
             $path = $remote_path;
         }
 
-        $path = Request::path_encode($path);
+        $path = Request::pathEncode($path);
 
         // set a content type for the upload
         $this->curl->setHeader('Content-Type', 'application/octet-stream');
@@ -110,7 +110,7 @@ class File
             $path = $remote_path;
         }
 
-        $path = Request::path_encode($path);
+        $path = Request::pathEncode($path);
 
         // set a content type for the upload
         $this->curl->setHeader('Content-Type', 'application/octet-stream');
@@ -141,7 +141,7 @@ class File
             'permissions' => $permissions,
         ];
 
-        return $this->request->post_json('/fs'.Request::path_encode($path), $params);
+        return $this->request->postJson('/fs'.Request::pathEncode($path), $params);
     }
 
     /**
@@ -153,7 +153,7 @@ class File
      */
     public function delete($path)
     {
-        return $this->request->delete('/fs'.Request::path_encode($path));
+        return $this->request->delete('/fs'.Request::pathEncode($path));
     }
 
     /**
@@ -173,7 +173,7 @@ class File
             'permissions' => $permissions,
         ];
 
-        return $this->request->post_json('/fs'.Request::path_encode($path), $params);
+        return $this->request->postJson('/fs'.Request::pathEncode($path), $params);
     }
 
     /**
@@ -186,7 +186,7 @@ class File
     public function download($path, $output=null)
     {
         // path names are passed in the URL, so they need encoding
-        $path = Request::path_encode($path);
+        $path = Request::pathEncode($path);
 
         $response = $this->request->get('/fs-content'.$path);
 
@@ -211,7 +211,7 @@ class File
             'list_content' => $recursive
         ];
 
-        return $this->request->get('/fs'.Request::path_encode($path), $params);
+        return $this->request->get('/fs'.Request::pathEncode($path), $params);
     }
 
     /**
