@@ -1,4 +1,6 @@
+composer.phar
 vendor
-composer.lock
 index.php
 .env
+composer_dev.json
+/tests/trash.php

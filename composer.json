@@ -14,7 +14,7 @@
 	},
 	"require-dev": {
         "vlucas/phpdotenv": "^2.4@dev",
-        "phpunit/phpunit": "~5.7"
+        "phpunit/phpunit": "^6.0"
     },
 	"license": "MIT",
 	"autoload": {
@@ -22,6 +22,15 @@
             "Yespbs\\Egnyte\\": "src/"
         }
     },
-	"minimum-stability": "dev",
-	"prefer-stable": true
+    "autoload-dev": {
+        "psr-4": {
+            "Yespbs\\Egnyte\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+	},
+	"config": {
+        "sort-packages": true
+    }
 }
