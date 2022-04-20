@@ -12,27 +12,26 @@ use EgnytePhp\Egnyte\Http\Response as Response;
  */
 class File
 {
+    /**
+     * @var \EgnytePhp\Egnyte\Http\Request
+     */
+    protected $request;
 
-  /**
-   * @var \EgnytePhp\Egnyte\Http\Request
-   */
-  protected $request;
+    /**
+     * @var \Curl\Curl
+     */
+    protected $curl;
 
-  /**
-   * @var \Curl\Curl
-   */
-  protected $curl;
-
-  /**
-   * @param \EgnytePhp\Egnyte\Client|NULL $client
-   * @param $domain
-   * @param $oauth_token
-   * @param $ssl
-   */
-  public function __construct(Client $client = null, $domain=null, $oauth_token=null, $ssl = false)
+    /**
+     * @param \EgnytePhp\Egnyte\Client|NULL $client
+     * @param $domain
+     * @param $oauth_token
+     * @param $ssl
+     */
+    public function __construct(Client $client = null, $domain=null, $oauth_token=null, $ssl = false)
     {
-        if( ! $client ){
-            $client = new Client( $domain, $oauth_token, $ssl );
+        if (! $client) {
+            $client = new Client($domain, $oauth_token, $ssl);
         }
 
         $this->request = $client->request;
@@ -88,9 +87,9 @@ class File
     public function upload($remote_path, $file_contents, $file_name=null): Response
     {
         // path names are passed in the URL, so they need encoding
-        if( $file_name ){
+        if ($file_name) {
             $path = $remote_path.'/'.$file_name;
-        }else{
+        } else {
             $path = $remote_path;
         }
 
@@ -122,9 +121,9 @@ class File
     public function uploadChunked($remote_path, $file_contents, $file_name=null): Response
     {
         // path names are passed in the URL, so they need encoding
-        if( $file_name ){
+        if ($file_name) {
             $path = $remote_path.'/'.$file_name;
-        }else{
+        } else {
             $path = $remote_path;
         }
 
@@ -208,7 +207,7 @@ class File
 
         $response = $this->request->get('/fs-content'.$path);
 
-        if( $output ){
+        if ($output) {
             return file_put_contents($output, $response->body);
         }
 

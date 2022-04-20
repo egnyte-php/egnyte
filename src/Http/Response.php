@@ -8,26 +8,25 @@ namespace EgnytePhp\Egnyte\Http;
  */
 class Response
 {
+    /**
+     * @var
+     */
+    public $response;
 
-  /**
-   * @var
-   */
-  public $response;
+    /**
+     * @var int
+     */
+    public $status_code;
 
-  /**
-   * @var int
-   */
-  public $status_code;
+    /**
+     * @var
+     */
+    public $body;
 
-  /**
-   * @var
-   */
-  public $body;
-
-  /**
-   * @var array|string[]
-   */
-  public $error_map = [
+    /**
+     * @var array|string[]
+     */
+    public $error_map = [
         400 => 'Bad Request',
         401 => 'Unauthorized',
         403 => 'Forbidden',

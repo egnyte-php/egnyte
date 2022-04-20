@@ -10,21 +10,20 @@ use Curl\Curl;
  */
 class Request
 {
+    /**
+     * @var \Yespbs\Egnyte\Client
+     */
+    protected $client;
 
-  /**
-   * @var \Yespbs\Egnyte\Client
-   */
-  protected $client;
+    /**
+     * @var
+     */
+    protected $curl;
 
-  /**
-   * @var
-   */
-  protected $curl;
-
-  /**
-   * @param \Yespbs\Egnyte\Client $client
-   */
-  public function __construct(Client $client)
+    /**
+     * @param \Yespbs\Egnyte\Client $client
+     */
+    public function __construct(Client $client)
     {
         $this->client = $client;
         $this->curl = $client->curl;
