@@ -1,23 +1,58 @@
 <?php
 
-namespace Yespbs\Egnyte;
+namespace EgnytePhp\Egnyte;
 
 use Curl\Curl as Curl;
-use Yespbs\Egnyte\Http\Request as Request;
+use EgnytePhp\Egnyte\Http\Request as Request;
 
+/**
+ * @class Client
+ * @package EgntyePhp
+ */
 class Client
 {
-    const EGNYTE_DOMAIN = 'egnyte.com';
-    const EGNYTE_ENDPOINT = '/pubapi/v1';
 
-    protected $oauth_token;
-    protected $domain;
+  /**
+   *
+   */
+  const EGNYTE_DOMAIN = 'egnyte.com';
 
-    public $base_url;
-    public $curl;
-    public $request;
+  /**
+   *
+   */
+  const EGNYTE_ENDPOINT = '/pubapi/v1';
 
-    public function __construct($domain, $oauth_token=null, $ssl = false)
+  /**
+   * @var mixed|null
+   */
+  protected $oauth_token;
+
+  /**
+   * @var
+   */
+  protected $domain;
+
+  /**
+   * @var string
+   */
+  public $base_url;
+
+  /**
+   * @var \Curl\Curl
+   */
+  public $curl;
+
+  /**
+   * @var \EgnytePhp\Egnyte\Http\Request
+   */
+  public $request;
+
+  /**
+   * @param $domain
+   * @param $oauth_token
+   * @param $ssl
+   */
+  public function __construct($domain, $oauth_token=null, $ssl = false)
     {
         if ( ! extension_loaded('curl') ) {
             throw new Exception('Egnyte Client requires the PHP Curl extension to be enabled');

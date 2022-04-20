@@ -1,16 +1,30 @@
 <?php
 
-namespace Yespbs\Egnyte\Http;
+namespace EgnytePhp\Egnyte\Http;
 
 use Yespbs\Egnyte\Client;
 use Curl\Curl;
 
+/**
+ *
+ */
 class Request
 {
-    protected $client;
-    protected $curl;
 
-    public function __construct(Client $client)
+  /**
+   * @var \Yespbs\Egnyte\Client
+   */
+  protected $client;
+
+  /**
+   * @var
+   */
+  protected $curl;
+
+  /**
+   * @param \Yespbs\Egnyte\Client $client
+   */
+  public function __construct(Client $client)
     {
         $this->client = $client;
         $this->curl = $client->curl;

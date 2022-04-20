@@ -4,3 +4,6 @@ index.php
 .env
 composer_dev.json
 /tests/trash.php
+composer.lock
+/.idea
+/.phpunit.result.cache

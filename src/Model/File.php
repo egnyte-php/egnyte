@@ -1,21 +1,39 @@
 <?php
 
-namespace Yespbs\Egnyte\Model;
+namespace EgnytePhp\Egnyte\Model;
 
-use Yespbs\Egnyte\Client as Client;
-use Yespbs\Egnyte\Http\Request as Request;
-use Yespbs\Egnyte\Http\Response as Response;
+use EgnytePhp\Egnyte\Client as Client;
+use EgnytePhp\Egnyte\Http\Request as Request;
+use EgnytePhp\Egnyte\Http\Response as Response;
 
+/**
+ * @class File
+ * @package EgnytePhp
+ */
 class File
 {
-    protected $request;
-    protected $curl;
 
-    public function __construct(Client $client = null, $domain=null, $oauth_token=null, $ssl = false)
+  /**
+   * @var \EgnytePhp\Egnyte\Http\Request
+   */
+  protected $request;
+
+  /**
+   * @var \Curl\Curl
+   */
+  protected $curl;
+
+  /**
+   * @param \EgnytePhp\Egnyte\Client|NULL $client
+   * @param $domain
+   * @param $oauth_token
+   * @param $ssl
+   */
+  public function __construct(Client $client = null, $domain=null, $oauth_token=null, $ssl = false)
     {
         if( ! $client ){
             $client = new Client( $domain, $oauth_token, $ssl );
-        }   
+        }
 
         $this->request = $client->request;
         $this->curl = $client->curl;
@@ -26,12 +44,12 @@ class File
      *
      * @param string $path The full path to the remote file/directory
      *
-     * @return Egnyte\Http\Response Response object
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
      */
-    public function getMetadata($path, $params = [])
+    public function getMetadata($path, $params = []): Response
     {
         $path = Request::pathEncode($path);
-        
+
         if (!empty($params)) {
             $path .= '?' . http_build_query($params);
         }
@@ -45,9 +63,9 @@ class File
      * @param string $parent_directory Parent directory
      * @param string $directory_name   Name of new directory
      *
-     * @return Egnyte\Http\Response Response object
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
      */
-    public function createFolder($path)
+    public function createFolder($path): Response
     {
         // path names are passed in the URL, so they need encoding
         $path = Request::pathEncode($path);
@@ -65,9 +83,9 @@ class File
      * @param string $file_name     Target file name
      * @param string $file_contents Binary contents of the file
      *
-     * @return Egnyte\Http\Response Response object
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
      */
-    public function upload($remote_path, $file_contents, $file_name=null)
+    public function upload($remote_path, $file_contents, $file_name=null): Response
     {
         // path names are passed in the URL, so they need encoding
         if( $file_name ){
@@ -97,11 +115,11 @@ class File
      * @param string $file_name     Target file name
      * @param string $file_contents Binary contents of the file
      *
-     * @return Egnyte\Http\Response Response object
-     * 
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
+     *
      * @todo
      */
-    public function uploadChunked($remote_path, $file_contents, $file_name=null)
+    public function uploadChunked($remote_path, $file_contents, $file_name=null): Response
     {
         // path names are passed in the URL, so they need encoding
         if( $file_name ){
@@ -131,9 +149,9 @@ class File
      * @param string $destination Full absolute destination path of file/directory
      * @param string $permissions Permissions of moved file or directory (NULL/keep_original/inherit_from_parent)
      *
-     * @return Egnyte\Http\Response Response object
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
      */
-    public function move($path, $destination, $permissions = null)
+    public function move($path, $destination, $permissions = null): Response
     {
         $params = [
             'action' => 'move',
@@ -149,9 +167,9 @@ class File
      *
      * @param string $path The full path to the remote file/directory
      *
-     * @return Egnyte\Http\Response Response object
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
      */
-    public function delete($path)
+    public function delete($path): Response
     {
         return $this->request->delete('/fs'.Request::pathEncode($path));
     }
@@ -163,9 +181,9 @@ class File
      * @param string $destination Full absolute destination path of file/directory
      * @param string $permissions Permissions of copied file or directory (NULL/keep_original/inherit_from_parent)
      *
-     * @return Egnyte\Http\Response Response object
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
      */
-    public function copy($path, $destination, $permissions = null)
+    public function copy($path, $destination, $permissions = null): Response
     {
         $params = [
             'action' => 'copy',
@@ -178,12 +196,12 @@ class File
 
     /**
      * Download file from Egnyte.
-     * 
+     *
      * @param  string $path   Remote file path
      * @param  string $output Local output directory and file name
      * @return bool
      */
-    public function download($path, $output=null)
+    public function download($path, $output=null): bool
     {
         // path names are passed in the URL, so they need encoding
         $path = Request::pathEncode($path);
@@ -203,9 +221,9 @@ class File
      * @param string $path     The full path to the remote file/directory
      * @param bool $recursive  List recursive for folder, all versions for file
      *
-     * @return Egnyte\Http\Response Response object
+     * @return \EgnytePhp\Egnyte\Http\Response Response object
      */
-    public function listFolder($path, $recursive=false)
+    public function listFolder($path, $recursive=false): Response
     {
         $params = [
             'list_content' => $recursive

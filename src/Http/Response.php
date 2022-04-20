@@ -1,13 +1,33 @@
 <?php
 
-namespace Yespbs\Egnyte\Http;
+namespace EgnytePhp\Egnyte\Http;
 
+/**
+ * @class Response
+ * @package EgnytePhp
+ */
 class Response
 {
-    public $response;
-    public $status_code;
-    public $body;
-    public $error_map = [
+
+  /**
+   * @var
+   */
+  public $response;
+
+  /**
+   * @var int
+   */
+  public $status_code;
+
+  /**
+   * @var
+   */
+  public $body;
+
+  /**
+   * @var array|string[]
+   */
+  public $error_map = [
         400 => 'Bad Request',
         401 => 'Unauthorized',
         403 => 'Forbidden',
@@ -38,7 +58,7 @@ class Response
      *
      * @return bool True if error, false if successful
      */
-    public function error()
+    public function error(): bool
     {
         return $this->status_code >= 400;
     }
@@ -46,9 +66,9 @@ class Response
     /**
      * JSON decode request's body response.
      *
-     * @return StdClass A decoded version of the JSON response
+     * @return \stdClass A decoded version of the JSON response
      */
-    public function getBody()
+    public function getBody(): \stdClass
     {
         return $this->body;
     }
@@ -59,7 +79,7 @@ class Response
      *
      * @return array An associated array containing error information
      */
-    public function getError()
+    public function getError(): array
     {
         if ($this->status_code < 400) {
             return new \Exception('Request was successful, there are no error details');
