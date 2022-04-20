@@ -38,6 +38,7 @@
             "vendor/bin/phpunit"
         ],
         "code:fix": [
+            "rm .php-cs-fixer.cache",
             "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src --allow-risky=yes"
         ]
     },
