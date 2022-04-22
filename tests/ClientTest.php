@@ -18,6 +18,4 @@ class ClientTest extends TestCase
         $client = new Client('domain');
         $this->assertInstanceOf(Client::class, $client);
     }
-
-
 }

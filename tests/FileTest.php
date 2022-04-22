@@ -17,6 +17,4 @@ class FileTest extends TestCase {
     $client = new File();
     $this->assertInstanceOf(File::class, $client);
   }
-
-
 }
