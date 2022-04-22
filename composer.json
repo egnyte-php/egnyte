@@ -30,7 +30,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "EgnytePhp\\Egnyte\\Test\\": "tests"
+            "EgnytePhp\\Egnyte\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -38,8 +38,10 @@
             "vendor/bin/phpunit"
         ],
         "code:fix": [
-            "rm .php-cs-fixer.cache",
-            "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src --allow-risky=yes"
+            "vendor/bin/phpcbf -vp --standard=PSR12 --extensions=php src"
+        ],
+        "code:lint": [
+            "find web/modules/custom web/themes/custom -name '*.php' -exec php -l {} \\;"
         ]
     },
     "config": {
