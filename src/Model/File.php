@@ -55,7 +55,7 @@ class File
       ];
       if ($domain != null) {
         $this->setDomain($domain);
-        $this->setBaseUri($domain . '.' . self::EGNYTE_DOMAIN . self::EGNYTE_ENDPOINT);
+        $this->setBaseUri("https://" . $domain . '.' . self::EGNYTE_DOMAIN);
         $client_defaults['base_uri'] = $this->getBaseUri();
       }
       if ($oauth_token != null) {
