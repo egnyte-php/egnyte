@@ -48,7 +48,11 @@ class File
    */
     public function __construct($domain = null, $oauth_token = null)
     {
-      $client_defaults = [];
+      $client_defaults = [
+        'debug' => true,
+        'verify' => false,
+        'http_errors' => false,
+      ];
       if ($domain != null) {
         $this->setDomain($domain);
         $this->setBaseUri($domain . '.' . self::EGNYTE_DOMAIN . self::EGNYTE_ENDPOINT);
@@ -101,9 +105,9 @@ class File
    *
    * @return \GuzzleHttp\Psr7\Response Response object
    */
-    public function upload($remote_path, $file_contents, $file_name = null): Response
+    public function upload($path, $file_contents, $file_name = null): Response
     {
-        return $this->getClient()->post($this->getBaseUri() . '/fs-content' . path, [
+        return $this->getClient()->post($this->getBaseUri() . '/fs-content' . $path, [
           "body" => $file_contents
         ]);
     }

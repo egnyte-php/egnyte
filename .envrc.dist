@@ -1,0 +1,3 @@
+export EGNYTE_KEY_VALUE="{\r\n\"client_id\": \"123456\",\r\n\"client_secret\": \"123456\",\r\n\"username\": \"blah@blah.com\",\r\n\"password\": \"resource-owner-password\"\r\n}"
+export EGNYTE_TOKEN_URL="https://betweenthelinestranslations.egnyte.com/puboauth/token"
+export EGNYTE_GRANT_TYPE="password"

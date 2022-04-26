@@ -24,6 +24,9 @@
 
   <php>
     <env name="APP_ENV" value="testing"/>
+    <env name="EGNYTE_KEY_VALUE" value=":EGNYTE_KEY_VALUE:"/>
+    <env name="EGNYTE_TOKEN_URL" value=":EGNYTE_TOKEN_URL:"/>
+    <env name="EGNYTE_GRANT_TYPE" value=":EGNYTE_GRANT_TYPE:"/>
   </php>
 
 </phpunit>
