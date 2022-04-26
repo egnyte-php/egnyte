@@ -15,6 +15,7 @@
     "require": {
         "php": ">=8.0",
         "ext-curl": "*",
+        "guzzlehttp/guzzle": "^6",
         "php-curl-class/php-curl-class": "^9.6"
     },
     "require-dev": {
@@ -41,7 +42,7 @@
             "vendor/bin/phpcbf -vp --standard=PSR12 --extensions=php src"
         ],
         "code:lint": [
-            "find web/modules/custom web/themes/custom -name '*.php' -exec php -l {} \\;"
+            "find src -name '*.php' -exec php -l {} \\;"
         ]
     },
     "config": {

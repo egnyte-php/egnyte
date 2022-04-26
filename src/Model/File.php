@@ -2,9 +2,9 @@
 
 namespace EgnytePhp\Egnyte\Model;
 
-use EgnytePhp\Egnyte\Client as Client;
-use EgnytePhp\Egnyte\Http\Request as Request;
-use EgnytePhp\Egnyte\Http\Response as Response;
+use GuzzleHttp\Client as Client;
+use GuzzleHttp\Psr7\Request as Request;
+use GuzzleHttp\Psr7\Response as Response;
 
 /**
  * @class File
@@ -13,29 +13,52 @@ use EgnytePhp\Egnyte\Http\Response as Response;
 class File
 {
   /**
-   * @var \EgnytePhp\Egnyte\Http\Request
+   *
    */
-    protected $request;
+    public const EGNYTE_DOMAIN = 'egnyte.com';
 
   /**
-   * @var \Curl\Curl
+   *
    */
-    protected $curl;
+    public const EGNYTE_ENDPOINT = '/pubapi/v1';
 
   /**
-   * @param \EgnytePhp\Egnyte\Client|NULL $client
+   * @var mixed|null
+   */
+    protected string $oauthToken;
+
+  /**
+   * @var
+   */
+    protected string $domain;
+
+  /**
+   * @var string
+   */
+    protected string $baseUri;
+
+  /**
+   * @var \GuzzleHttp\Client
+   */
+    protected Client $client;
+
+  /**
    * @param $domain
    * @param $oauth_token
-   * @param $ssl
    */
-    public function __construct(Client $client = null, $domain = null, $oauth_token = null, $ssl = false)
+    public function __construct($domain = null, $oauth_token = null)
     {
-        if (! $client) {
-            $client = new Client($domain, $oauth_token, $ssl);
-        }
-
-        $this->request = $client->request;
-        $this->curl = $client->curl;
+      $client_defaults = [];
+      if ($domain != null) {
+        $this->setDomain($domain);
+        $this->setBaseUri($domain . '.' . self::EGNYTE_DOMAIN . self::EGNYTE_ENDPOINT);
+        $client_defaults['base_uri'] = $this->getBaseUri();
+      }
+      if ($oauth_token != null) {
+        $this->setOauthToken($oauth_token);
+        $client_defaults['headers']['X-Authorization'] = "Bearer " . $this->getOauthToken();
+      }
+      $this->setClient(new Client($client_defaults));
     }
 
   /**
@@ -43,17 +66,13 @@ class File
    *
    * @param string $path The full path to the remote file/directory
    *
-   * @return \EgnytePhp\Egnyte\Http\Response Response object
+   * @return \GuzzleHttp\Psr7\Response Response object
    */
     public function getMetadata($path, $params = []): Response
     {
-        $path = Request::pathEncode($path);
-
-        if (!empty($params)) {
-            $path .= '?' . http_build_query($params);
-        }
-
-        return $this->request->get('/fs' . $path);
+        return $this->getClient()->get($this->getBaseUri() .  '/fs' . $path, [
+          "url_params" => $params
+        ]);
     }
 
   /**
@@ -62,16 +81,14 @@ class File
    * @param string $parent_directory Parent directory
    * @param string $directory_name   Name of new directory
    *
-   * @return \EgnytePhp\Egnyte\Http\Response Response object
+   * @return \GuzzleHttp\Psr7\Response Response object
    */
-    public function createFolder($path): Response
+    public function createFolder(string $path): Response
     {
-      // path names are passed in the URL, so they need encoding
-        $path = Request::pathEncode($path);
-
-        return $this->request->postJson('/fs' . $path, ['action' => 'add_folder'], [
-            403 => 'User does not have permission to create directory',
-            405 => 'A directory with the same name already exists',
+        return $this->getClient()->post($this->getBaseUri() . '/fs' . $path, [
+          "json" => [
+            'action' => 'add_folder'
+          ]
         ]);
     }
 
@@ -82,29 +99,13 @@ class File
    * @param string $file_name     Target file name
    * @param string $file_contents Binary contents of the file
    *
-   * @return \EgnytePhp\Egnyte\Http\Response Response object
+   * @return \GuzzleHttp\Psr7\Response Response object
    */
     public function upload($remote_path, $file_contents, $file_name = null): Response
     {
-      // path names are passed in the URL, so they need encoding
-        if ($file_name) {
-            $path = $remote_path . '/' . $file_name;
-        } else {
-            $path = $remote_path;
-        }
-
-        $path = Request::pathEncode($path);
-
-      // set a content type for the upload
-        $this->curl->setHeader('Content-Type', 'application/octet-stream');
-
-        $response = $this->request->post('/fs-content' . $path, $file_contents, [
-            400 => 'Missing parameters, file filtered out, e.g. .tmp file or file is too large (>100 MB)',
-            401 => 'User not authorized',
-            403 => 'Not enough permissions/forbidden file upload location, e.g. /, /Shared, /Private etc.',
+        return $this->getClient()->post($this->getBaseUri() . '/fs-content' . path, [
+          "body" => $file_contents
         ]);
-
-        return $response;
     }
 
   /**
@@ -114,31 +115,15 @@ class File
    * @param string $file_name     Target file name
    * @param string $file_contents Binary contents of the file
    *
-   * @return \EgnytePhp\Egnyte\Http\Response Response object
+   * @return \GuzzleHttp\Psr7\Response Response object
    *
    * @todo
    */
-    public function uploadChunked($remote_path, $file_contents, $file_name = null): Response
+    public function uploadChunked(string $path, $file_contents): Response
     {
-      // path names are passed in the URL, so they need encoding
-        if ($file_name) {
-            $path = $remote_path . '/' . $file_name;
-        } else {
-            $path = $remote_path;
-        }
-
-        $path = Request::pathEncode($path);
-
-      // set a content type for the upload
-        $this->curl->setHeader('Content-Type', 'application/octet-stream');
-
-        $response = $this->request->post('/fs-content' . $path, $file_contents, [
-            400 => 'Missing parameters, file filtered out, e.g. .tmp file or file is too large (>100 MB)',
-            401 => 'User not authorized',
-            403 => 'Not enough permissions/forbidden file upload location, e.g. /, /Shared, /Private etc.',
+        return $this->getClient()->post($this->getBaseUri() . "/fs-content" . $path, [
+          "body" => $file_contents
         ]);
-
-        return $response;
     }
 
   /**
@@ -148,17 +133,17 @@ class File
    * @param string $destination Full absolute destination path of file/directory
    * @param string $permissions Permissions of moved file or directory (NULL/keep_original/inherit_from_parent)
    *
-   * @return \EgnytePhp\Egnyte\Http\Response Response object
+   * @return \GuzzleHttp\Psr7\Response Response object
    */
     public function move($path, $destination, $permissions = null): Response
     {
-        $params = [
+        return $this->getClient()->post($this->getBaseUri() . '/fs' . $path, [
+          "json" => [
             'action' => 'move',
             'destination' => $destination,
             'permissions' => $permissions,
-        ];
-
-        return $this->request->postJson('/fs' . Request::pathEncode($path), $params);
+          ]
+        ]);
     }
 
   /**
@@ -170,7 +155,7 @@ class File
    */
     public function delete($path): Response
     {
-        return $this->request->delete('/fs' . Request::pathEncode($path));
+        return $this->request->delete($this->getBaseUri() . "/fs" . $path);
     }
 
   /**
@@ -180,38 +165,29 @@ class File
    * @param string $destination Full absolute destination path of file/directory
    * @param string $permissions Permissions of copied file or directory (NULL/keep_original/inherit_from_parent)
    *
-   * @return \EgnytePhp\Egnyte\Http\Response Response object
+   * @return \GuzzleHttp\Psr7\Response Response object
    */
     public function copy($path, $destination, $permissions = null): Response
     {
-        $params = [
+        return $this->getClient()->post($this->getBaseUri() . '/fs' . $path, [
+          "json" => [
             'action' => 'copy',
             'destination' => $destination,
             'permissions' => $permissions,
-        ];
-
-        return $this->request->postJson('/fs' . Request::pathEncode($path), $params);
+          ]
+        ]);
     }
 
   /**
-   * Download file from Egnyte.
+   * Retrieve file from Egnyte.
    *
    * @param  string $path   Remote file path
    * @param  string $output Local output directory and file name
-   * @return bool
+   * @return Response
    */
-    public function download($path, $output = null): bool
+    public function getFile($path): Response
     {
-      // path names are passed in the URL, so they need encoding
-        $path = Request::pathEncode($path);
-
-        $response = $this->request->get('/fs-content' . $path);
-
-        if ($output) {
-            return file_put_contents($output, $response->body);
-        }
-
-        return $response->body;
+        return $this->getClient()->get($this->getBaseUri() . "/fs-content" . $path);
     }
 
   /**
@@ -220,15 +196,15 @@ class File
    * @param string $path     The full path to the remote file/directory
    * @param bool $recursive  List recursive for folder, all versions for file
    *
-   * @return \EgnytePhp\Egnyte\Http\Response Response object
+   * @return Response Response object
    */
     public function listFolder($path, $recursive = false): Response
     {
-        $params = [
+        return $this->getClient()->get($this->getBaseUri() . '/fs' . $path, [
+          "url_params" => [
             'list_content' => $recursive
-        ];
-
-        return $this->request->get('/fs' . Request::pathEncode($path), $params);
+          ]
+        ]);
     }
 
   /**
@@ -253,5 +229,72 @@ class File
     public function mkdir()
     {
         return call_user_func_array('self::createFolder', func_get_args());
+    }
+
+  /**
+   * @return mixed|null
+   */
+    public function getOauthToken(): mixed
+    {
+        return $this->oauthToken;
+    }
+
+  /**
+   * @param mixed|null $oauthToken
+   */
+    public function setOauthToken(mixed $oauthToken): void
+    {
+        $this->oauthToken = $oauthToken;
+    }
+
+  /**
+   * @return mixed
+   */
+    public function getDomain(): mixed
+    {
+        return $this->domain;
+    }
+
+  /**
+   * @param mixed $domain
+   */
+    public function setDomain(mixed $domain): void
+    {
+        $this->domain = $domain;
+    }
+
+  /**
+   * @return string
+   */
+    public function getBaseUri(): string
+    {
+        return $this->baseUri;
+    }
+
+  /**
+   * @param string $baseUri
+   */
+    public function setBaseUri(string $baseUri): void
+    {
+        $this->baseUri = $baseUri;
+    }
+
+  /**
+   * @return \GuzzleHttp\Client
+   */
+    public function getClient(): Client
+    {
+      if (!$this->client) {
+
+      }
+      return $this->client;
+    }
+
+  /**
+   * @param \GuzzleHttp\Client $client
+   */
+    public function setClient(Client $client): void
+    {
+        $this->client = $client;
     }
 }
