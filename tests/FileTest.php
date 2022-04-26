@@ -39,8 +39,8 @@ class FileTest extends TestCase {
     $file = new File('betweenlines', '12345678901234567890');
     $config = $file->getClient()->getConfig();
     $this->assertIsArray($config['headers'], "client config should have headers");
-    $this->assertArrayHasKey("X-Authorization", $config['headers'], "headers config should show authorization header");
-    $this->assertEquals($config['headers']['X-Authorization'], "Bearer 12345678901234567890");
+    $this->assertArrayHasKey("Authorization", $config['headers'], "headers config should show authorization header");
+    $this->assertEquals($config['headers']['Authorization'], "Bearer 12345678901234567890");
   }
 
   /**
