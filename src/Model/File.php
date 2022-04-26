@@ -272,7 +272,7 @@ class File
    */
     public function getBaseUri(): string
     {
-        return $this->baseUri;
+        return $this->baseUri . self::EGNYTE_ENDPOINT;
     }
 
   /**
@@ -280,7 +280,7 @@ class File
    */
     public function setBaseUri(string $baseUri): void
     {
-        $this->baseUri = $baseUri;
+        $this->baseUri = str_replace(self::EGNYTE_ENDPOINT, "", $baseUri);
     }
 
   /**
