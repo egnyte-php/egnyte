@@ -1,3 +1,4 @@
-export EGNYTE_KEY_VALUE="{\r\n\"client_id\": \"123456\",\r\n\"client_secret\": \"123456\",\r\n\"username\": \"blah@blah.com\",\r\n\"password\": \"resource-owner-password\"\r\n}"
-export EGNYTE_TOKEN_URL="https://betweenthelinestranslations.egnyte.com/puboauth/token"
+export EGNYTE_DOMAIN={EGNYTE_PROJECT_NAME}
+export EGNYTE_KEY_VALUE="{\"clientId\":\"123456\",\"clientSecret\":\"123456\",\"username\":\"blah@blah.com\",\"password\":\"resource-owner-password\"}"
+export EGNYTE_TOKEN_URL="https://{EGNYTE_PROJECT_NAME}.egnyte.com/puboauth/token"
 export EGNYTE_GRANT_TYPE="password"

@@ -16,12 +16,14 @@
         "php": ">=8.0",
         "ext-curl": "*",
         "guzzlehttp/guzzle": "^6",
+        "league/oauth2-client": "^2.6",
         "sainsburys/guzzle-oauth2-plugin": "^3.0"
     },
     "require-dev": {
-        "vlucas/phpdotenv": "^2.4@dev",
+        "kint-php/kint": "^4.1",
         "phpunit/phpunit": "^9.0",
-        "squizlabs/php_codesniffer": "^3.6"
+        "squizlabs/php_codesniffer": "^3.6",
+        "vlucas/phpdotenv": "^2.4@dev"
     },
     "license": "MIT",
     "autoload": {
