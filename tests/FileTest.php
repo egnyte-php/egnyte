@@ -2,6 +2,7 @@
 
 namespace EgnytePhp\Egnyte\Tests;
 
+use EgnytePhp\Egnyte\AccessTokenTrait;
 use EgnytePhp\Egnyte\Model\File;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
@@ -14,6 +15,8 @@ use PHPUnit\Framework\TestCase;
  *
  */
 class FileTest extends TestCase {
+
+  use AccessTokenTrait;
 
   /**
    * @test
@@ -48,40 +51,29 @@ class FileTest extends TestCase {
    */
   public function testBasicFileFunctions() {
     $domain = getenv('EGNYTE_DOMAIN');
-    $token = $this->getAccessToken();
+    $this->setFromEnv();
+    $token = $this->getAccessToken()->getToken();
     $this->assertIsString($token, "Token should be returned as string");
     $file = new File($domain, $token);
-
     $dirlist = $file->listFolder("/Shared");
-    $this->assertInstanceOf(Response::class, $dirlist,);
-    $this->assertTrue(in_array($dirlist->getStatusCode(), [
+    $this->isOk($dirlist);
+    $this->assertNotEmpty($dirlist->getBody(), "Returned list should not be empty.");
+    $folderName = sprintf("/Shared/%s" , uniqid("testing-"));
+    $folderCreate = $file->createFolder($folderName);
+    $this->isOk($folderCreate);
+    $newFolderList = $file->listFolder($folderName);
+    $this->isOk($newFolderList);
+    $uploadTest = $file->upload($folderName, file_get_contents(dirname(__FILE__) . "/fixtures/file_to_upload.txt"), "file_to_upload.txt");
+    $this->isOk($uploadTest);
+  }
+
+  protected function isOk(Response $response) {
+    $this->assertTrue(in_array($response->getStatusCode(), [
       200,
       201,
       202,
       203,
-    ]), "Status code should be one of the 200's: " . $dirlist->getStatusCode());
-    $this->assertNotEmpty($dirlist->getBody(), "Returned list should not be empty.");
-
-  }
-
-  public function getAccessToken(): string {
-    $url = new Uri(getenv('EGNYTE_TOKEN_URL'));
-    $config = json_decode(getenv("EGNYTE_KEY_VALUE"), TRUE);
-    $baseUri = str_replace($url->getPath(), "", (string) $url);
-    $provider = new GenericProvider([
-      'clientId'                => $config['clientId'],    // The client ID assigned to you by the provider
-      'clientSecret'            => $config['clientSecret'],    // The client password assigned to you by the provider
-      'urlAccessToken'          => (string) $url,
-      'urlResourceOwnerDetails' => $baseUri . '/pubapi/v1/userinfo',
-      'urlAuthorize'            => $baseUri . '/pubapi/v1/authorize'
-    ]);
-    $token = $provider->getAccessToken('password', [
-      'username' => $config['username'],
-      'password' => $config['password']
-    ]);
-    $this->assertInstanceOf(AccessToken::class, $token, "Should be instance of Access Token");
-    $this->assertIsString($token->getToken(), "Should be access Token String");
-    return $token->getToken();
+    ]), "Status code should be one of the 200's: " . $response->getStatusCode() . "::" . $response->getReasonPhrase());
   }
 
 }

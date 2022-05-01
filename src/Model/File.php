@@ -105,11 +105,14 @@ class File
    *
    * @return \GuzzleHttp\Psr7\Response Response object
    */
-    public function upload($path, $file_contents, $file_name = null): Response
+    public function upload(string $path, $file_contents, string $file_name): Response
     {
-        return $this->getClient()->post($this->getBaseUri() . '/fs-content' . $path, [
-          "body" => $file_contents
-        ]);
+        return $this->getClient()->post(
+          sprintf('%s/fs-content/%s/%s', $this->getBaseUri() , $path , $file_name),
+          [
+            "body" => $file_contents,
+          ]
+        );
     }
 
   /**
