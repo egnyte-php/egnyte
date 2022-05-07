@@ -5,9 +5,6 @@ namespace EgnytePhp\Egnyte\Tests;
 use EgnytePhp\Egnyte\AccessTokenTrait;
 use EgnytePhp\Egnyte\Model\File;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Uri;
-use League\OAuth2\Client\Provider\GenericProvider;
-use League\OAuth2\Client\Token\AccessToken;
 use PHPUnit\Framework\TestCase;
 
 
@@ -54,7 +51,7 @@ class FileTest extends TestCase {
     $this->setFromEnv();
     $token = $this->getAccessToken()->getToken();
     $this->assertIsString($token, "Token should be returned as string");
-    $file = new File($domain, $token);
+    $file = new File($domain, $token, $this->getHttpClient());
     $dirlist = $file->listFolder("/Shared");
     $this->isOk($dirlist);
     $this->assertNotEmpty($dirlist->getBody(), "Returned list should not be empty.");

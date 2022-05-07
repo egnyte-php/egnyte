@@ -17,7 +17,8 @@
         "ext-curl": "*",
         "guzzlehttp/guzzle": "^6",
         "league/oauth2-client": "^2.6",
-        "sainsburys/guzzle-oauth2-plugin": "^3.0"
+        "sainsburys/guzzle-oauth2-plugin": "^3.0",
+        "spatie/guzzle-rate-limiter-middleware": "^2.0"
     },
     "require-dev": {
         "kint-php/kint": "^4.1",
@@ -41,7 +42,7 @@
             "vendor/bin/phpunit"
         ],
         "code:fix": [
-            "vendor/bin/phpcbf -vp --standard=PSR12 --extensions=php src"
+            "vendor/bin/phpcbf -vp --extensions=php src"
         ],
         "code:lint": [
             "find src -name '*.php' -exec php -l {} \\;"
