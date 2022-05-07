@@ -64,7 +64,8 @@ class File
         }
 
         if (!empty($client_defaults)) {
-            $client = new Client($client_defaults);
+            // merge client defaults with the ones created here
+            $client = $this->getClient($client_defaults);
         }
 
         if ($client != null) {
@@ -348,20 +349,17 @@ class File
     /**
      * @return \GuzzleHttp\Client
      */
-    public function getClient(): Client
+    public function getClient(array $defaults = []): Client
     {
         if (!isset($this->client)) {
             $stack = HandlerStack::create();
             $stack->push(RateLimiterMiddleware::perSecond(2));
-            $this->client = new Client(
-                [
-                    'handler'     => $stack,
-                    'debug'       => true,
-                    'http_errors' => false,
-                ]
-            );
+            $this->client = new Client([
+                'handler'     => $stack,
+                'debug'       => true,
+                'http_errors' => false,
+              ] + $defaults);
         }
-
         return $this->client;
 
     }//end getClient()
