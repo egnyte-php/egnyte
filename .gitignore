@@ -10,3 +10,4 @@ composer.lock
 /.php-cs-fixer.cache
 .DS_Store
 /.envrc
+/tests/fixtures/*.mov
