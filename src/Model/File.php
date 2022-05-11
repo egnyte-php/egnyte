@@ -67,7 +67,7 @@ class File
 
         if ($oauth_token != null) {
             $this->setOauthToken($oauth_token);
-            $client_defaults['headers']['Authorization'] = "Bearer ".$this->getOauthToken();
+            $client_defaults['headers']['Authorization'] = "Bearer " . $this->getOauthToken()->getToken();
         }
 
         if (!empty($client_defaults)) {
