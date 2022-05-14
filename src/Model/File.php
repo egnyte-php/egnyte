@@ -30,7 +30,7 @@ class File
     /**
      * @var mixed|null
      */
-    protected AccessToken $oauthToken;
+    protected ?AccessToken $oauthToken = null;
 
     /**
      * @var
@@ -185,7 +185,7 @@ class File
             do {
                 $pos = ftell($fileHandle);
                 // Read 80 mb at a time
-                $options['body'] = fread($fileHandle, 10486016);
+                $options['body'] = fread($fileHandle, (1048576 * 20));
                 $options['headers']['X-Egnyte-Chunk-Sha512-Checksum'] = hash("sha512", $options['body']);
                 $options['headers']["X-Egnyte-Chunk-Num"] = $chunkNum;
                 if (feof($fileHandle)) {
@@ -384,9 +384,9 @@ class File
 
 
     /**
-     * @return mixed|null
+     * @return AccessToken
      */
-    public function getOauthToken(): AccessToken
+    public function getOauthToken(): ?AccessToken
     {
         return $this->oauthToken;
 
@@ -394,7 +394,7 @@ class File
 
 
     /**
-     * @param mixed|null $oauthToken
+     * @param string|AccessToken $oauthToken
      */
     public function setOauthToken($oauthToken): void
     {
